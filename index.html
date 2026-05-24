@@ -1,38 +1,51 @@
-<div class="grid">
-    <div class="card">
-        <h3>👤 Perfil do Sujeito</h3>
-        <p><strong>Nome:</strong> <span id="nome"></span></p>
-        <p><strong>Nascimento:</strong> <span id="nasc"></span></p>
-        <p><strong>Status Federal:</strong> <span id="status"></span></p>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta CPF</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f9; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { padding: 10px; flex: 1; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 20px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        
+        /* Layout Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        /* Barra de Score */
+        .bar { background: #eee; height: 10px; border-radius: 5px; margin: 10px 0; }
+        .bar-fill { background: #28a745; height: 100%; border-radius: 5px; transition: 0.5s; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Consulta de CPF</h2>
+    <div class="search-box">
+        <input type="text" id="cpfInput" placeholder="Digite o CPF...">
+        <button onclick="buscar()">Buscar</button>
     </div>
 
-    <div class="card">
-        <h3>💰 Perfil Financeiro</h3>
-        <p><strong>Renda Estimada:</strong> R$ <span id="renda"></span></p>
-        <p><strong>Poder Aquisitivo:</strong> <span id="poder"></span></p>
-        <p><strong>Score Serasa:</strong> <span id="score"></span></p>
+    <div class="card" style="margin-bottom: 20px;">
+        <div id="score">Score: 0</div>
+        <div class="bar"><div class="bar-fill" id="fill" style="width: 0%"></div></div>
+        <div id="perfil"><b>Perfil:</b> -</div>
+        <div id="idade"><b>Idade:</b> -</div>
     </div>
 
-    <div class="card">
-        <h3>📍 Histórico de Endereços</h3>
-        <div id="lista-enderecos" class="small"></div>
-    </div>
-
-    <div class="card">
-        <h3>📞 Contatos & Operadoras</h3>
-        <div id="lista-contatos" class="small"></div>
-    </div>
-
-    <div class="card">
-        <h3>🛒 Atividade Comercial</h3>
-        <p><strong>Total de Pedidos:</strong> <span id="total-pedidos"></span></p>
-        <p><strong>Primeira Compra:</strong> <span id="primeira-compra"></span></p>
-        <p><strong>Última Compra:</strong> <span id="ultima-compra"></span></p>
-    </div>
-
-    <div class="card">
-        <h3>🔗 Vínculos e Vizinhos</h3>
-        <p><strong>Mãe:</strong> <span id="mae"></span></p>
-        <div id="lista-vizinhos" class="small"></div>
+    <div class="grid">
+        <div class="card" id="dados"><b>👤 Dados</b></div>
+        <div class="card" id="contatos"><b>📞 Contatos</b></div>
+        <div class="card" id="financeiro"><b>💰 Financeiro</b></div>
+        <div class="card" id="enderecos"><b>📍 Endereços</b></div>
+        <div class="card" id="qualidade"><b>📊 Data Quality</b></div>
+        <div class="card" id="atividade"><b>🧠 Activity</b></div>
+        <div class="card" id="rede"><b>👥 Vizinhos</b></div>
     </div>
 </div>
+
+<script src="app.js"></script>
+</body>
+</html>
