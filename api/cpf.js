@@ -28,3 +28,28 @@ export default async function handler(req, res) {
     });
   }
 }
+function calcularScore(dados) {
+  let score = 0;
+
+  if (dados.name) score += 10;
+  if (dados.cpf) score += 10;
+  if (dados.birth_date) score += 10;
+
+  if (dados.phones && dados.phones.length > 1) score += 10;
+  if (dados.all_addresses && dados.all_addresses.length > 1) score += 10;
+
+  if (dados.additional_emails && dados.additional_emails.length > 0) score += 10;
+
+  if (dados.income) {
+    const renda = Number(dados.income);
+    if (renda < 1500) score += 5;
+    else if (renda < 5000) score += 10;
+    else score += 15;
+  }
+
+  if (dados.serasa_completo) score += 15;
+
+  if (dados.parentes && dados.parentes.length > 0) score += 10;
+
+  return Math.min(score, 100);
+}
