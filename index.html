@@ -2,50 +2,158 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Consulta CPF</title>
+    <title>INTEL DASH - CPF</title>
+
     <style>
-        body { font-family: sans-serif; background: #f4f4f9; padding: 20px; }
-        .container { max-width: 900px; margin: auto; }
-        .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
-        input { padding: 10px; flex: 1; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 10px 20px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
-        
-        /* Layout Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
-        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        
-        /* Barra de Score */
-        .bar { background: #eee; height: 10px; border-radius: 5px; margin: 10px 0; }
-        .bar-fill { background: #28a745; height: 100%; border-radius: 5px; transition: 0.5s; }
+        body {
+            font-family: sans-serif;
+            background: #f4f4f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .top-card {
+            margin-bottom: 20px;
+        }
+
+        .bar {
+            background: #ddd;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .bar-fill {
+            background: linear-gradient(90deg, #28a745, #00c853);
+            height: 100%;
+            width: 0%;
+            transition: width 0.6s ease;
+        }
+
+        #score {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #perfil {
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        #idade {
+            margin-top: 5px;
+            color: #555;
+        }
     </style>
 </head>
+
 <body>
 
 <div class="container">
-    <h2>Consulta de CPF</h2>
+
+    <h2>🔎 INTEL DASH - Consulta CPF</h2>
+
+    <!-- SEARCH -->
     <div class="search-box">
         <input type="text" id="cpfInput" placeholder="Digite o CPF...">
         <button onclick="buscar()">Buscar</button>
     </div>
 
-    <div class="card" style="margin-bottom: 20px;">
+    <!-- TOP SCORE -->
+    <div class="card top-card">
         <div id="score">Score: 0</div>
-        <div class="bar"><div class="bar-fill" id="fill" style="width: 0%"></div></div>
+        <div class="bar">
+            <div class="bar-fill" id="fill"></div>
+        </div>
+
         <div id="perfil"><b>Perfil:</b> -</div>
         <div id="idade"><b>Idade:</b> -</div>
     </div>
 
+    <!-- GRID -->
     <div class="grid">
-        <div class="card" id="dados"><b>👤 Dados</b></div>
-        <div class="card" id="contatos"><b>📞 Contatos</b></div>
-        <div class="card" id="financeiro"><b>💰 Financeiro</b></div>
-        <div class="card" id="enderecos"><b>📍 Endereços</b></div>
-        <div class="card" id="qualidade"><b>📊 Data Quality</b></div>
-        <div class="card" id="atividade"><b>🧠 Activity</b></div>
-        <div class="card" id="rede"><b>👥 Vizinhos</b></div>
+
+        <div class="card" id="dados">
+            <b>👤 Dados</b>
+        </div>
+
+        <div class="card" id="contatos">
+            <b>📞 Contatos</b>
+        </div>
+
+        <div class="card" id="financeiro">
+            <b>💰 Financeiro</b>
+        </div>
+
+        <div class="card" id="enderecos">
+            <b>📍 Endereços</b>
+        </div>
+
+        <div class="card" id="qualidade">
+            <b>📊 Data Quality</b>
+        </div>
+
+        <div class="card" id="atividade">
+            <b>🧠 Activity</b>
+        </div>
+
+        <div class="card" id="rede">
+            <b>👥 Vizinhos</b>
+        </div>
+
     </div>
 </div>
 
-<script src="app.js"></script>
+<!-- IMPORTANTE: DEFER evita bug de DOM -->
+<script src="app.js" defer></script>
+
 </body>
 </html>
