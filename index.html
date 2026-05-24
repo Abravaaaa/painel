@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>CPF Dashboard</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f1115;
+      color: #fff;
+      padding: 30px;
+    }
+
+    input {
+      padding: 10px;
+      width: 250px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      background: #00c853;
+      color: white;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .card {
+      background: #1c1f26;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .label {
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .value {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .error {
+      color: #ff5252;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>🔎 CPF Lookup Dashboard</h2>
+
+  <input id="cpf" placeholder="Digite CPF" />
+  <button onclick="buscar()">Buscar</button>
+
+  <div id="result"></div>
+
+  <script>
+    async function buscar() {
+      const cpf = document.getElementById("cpf").value;
+      const box = document.getElementById("result");
+
+      box.innerHTML = "⏳ Carregando...";
+
+      try {
+        const url = `https://snoopintelligence.cloud/api/v2/generic/cpf?cpf=${cpf}&token=snp_pe_12364015_520e3ffa`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        // ❌ NOT FOUND
+        if (data.statusCode !== 200) {
+          box.innerHTML = `<div class="error">❌ ${data.message}</div>`;
+          return;
+        }
+
+        const d = data.body;
+
+        box.innerHTML = `
+          <div class="card">
+            <h3>👤 Dados Pessoais</h3>
+
+            <div class="grid">
+              <div>
+                <div class="label">Nome</div>
+                <div class="value">${d.name || "-"}</div>
+              </div>
+
+              <div>
+                <div class="label">CPF</div>
+                <div class="value">${d.cpf_masked || d.cpf}</div>
+              </div>
+
+              <div>
+                <div class="label">Nascimento</div>
+                <div class="value">${d.birth_date || "-"}</div>
+              </div>
+
+              <div>
+                <div class="label">Status</div>
+                <div class="value">${d.federal_status || "-"}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>📍 Endereço</h3>
+
+            <div class="value">
+              ${d.address?.street || ""} ${d.address?.number || ""}<br>
+              ${d.address?.neighborhood || ""}<br>
+              ${d.address?.city || ""} - ${d.address?.state || ""}
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>💰 Financeiro</h3>
+
+            <div class="grid">
+              <div>
+                <div class="label">Renda</div>
+                <div class="value">${d.income || "-"}</div>
+              </div>
+
+              <div>
+                <div class="label">Score</div>
+                <div class="value">${d.score || "-"}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>📞 Contatos</h3>
+
+            <div class="value">
+              ${(d.phones || []).join("<br>")}
+            </div>
+          </div>
+        `;
+
+      } catch (err) {
+        box.innerHTML = `<div class="error">Erro na requisição</div>`;
+      }
+    }
+  </script>
+
+</body>
+</html>
