@@ -4,73 +4,74 @@ async function buscar() {
   const res = await fetch(`/api/cpf?cpf=${cpf}`);
   const data = await res.json();
 
-  const body = data.body || data;
+  const pessoa = data.body || data;
 
-  // SCORE
-  document.getElementById("scoreFill").style.width = (data.score_total || 0) + "%";
+  // SCORE (simples animado)
+  const score = calcularScore(pessoa);
+  animarScore(score);
 
-  // 👤 DADOS PRINCIPAIS
+  // 👤 Dados
   document.getElementById("dados").innerHTML = `
-    <b>Nome:</b> ${body.name || "-"} <br>
-    <b>CPF:</b> ${body.cpf || "-"} <br>
-    <b>Nascimento:</b> ${body.birth_date || "-"} <br>
-    <b>Sexo:</b> ${body.gender || "-"} <br>
-    <b>Status:</b> ${body.federal_status || "-"}
+    Nome: ${pessoa.name || "-"} <br>
+    CPF: ${pessoa.cpf || "-"} <br>
+    Nascimento: ${pessoa.birth_date || "-"} <br>
+    Sexo: ${pessoa.gender || "-"} <br>
+    Status: ${pessoa.federal_status || "-"}
   `;
 
-  // 📞 TELEFONES (com tratamento melhor)
+  // 📞 Contatos
   document.getElementById("contatos").innerHTML = `
     <b>Telefones:</b><br>
-    ${(body.phones || []).map(t => `• ${t}`).join("<br>")}
-    <br><br>
+    ${(pessoa.phones || []).map(t => "• " + t).join("<br>")}<br><br>
+
     <b>Emails:</b><br>
-    ${(body.additional_emails || []).map(e => `• ${e}`).join("<br>")}
+    ${(pessoa.additional_emails || []).map(e => "• " + e).join("<br>")}
   `;
 
-  // 📍 ENDEREÇOS (principais + históricos)
+  // 📍 Endereço
+  const a = pessoa.address || {};
   document.getElementById("endereco").innerHTML = `
-    <b>Principal:</b><br>
-    ${body.address?.street || ""} ${body.address?.number || ""} <br>
-    ${body.address?.neighborhood || ""} <br>
-    ${body.address?.city || ""} - ${body.address?.state || ""}
-    <br><br>
-
-    <b>Outros endereços:</b><br>
-    ${(body.all_addresses || [])
-      .slice(0, 5)
-      .map(a => `• ${a.street} ${a.number || ""} - ${a.city}`)
-      .join("<br>")}
+    ${a.street || ""} ${a.number || ""}<br>
+    ${a.neighborhood || ""}<br>
+    ${a.city || ""} - ${a.state || ""}
   `;
 
-  // 💰 FINANCEIRO (NOVO BLOCO IMPORTANTE)
-  if (!document.getElementById("financeiro")) {
-    document.querySelector(".cards").innerHTML += `
-      <div class="card">
-        <h3>💰 Financeiro</h3>
-        <div id="financeiro"></div>
-      </div>
-    `;
-  }
-
+  // 💰 Financeiro
   document.getElementById("financeiro").innerHTML = `
-    <b>Renda:</b> ${body.income || "-"} <br>
-    <b>Poder aquisitivo:</b> ${body.poder_aquisitivo?.PODER_AQUISITIVO || "-"} <br>
-    <b>PIS:</b> ${body.pis || "-"}
+    Renda: ${pessoa.income || "-"}<br>
+    Poder: ${pessoa.poder_aquisitivo?.PODER_AQUISITIVO || "-"}<br>
+    PIS: ${pessoa.pis || "-"}
   `;
 
-  // 👨‍👩‍👧 RELACIONADOS (NOVO)
-  if (!document.getElementById("relacionados")) {
-    document.querySelector(".cards").innerHTML += `
-      <div class="card">
-        <h3>👨‍👩‍👧 Relacionados</h3>
-        <div id="relacionados"></div>
-      </div>
-    `;
-  }
-
-  document.getElementById("relacionados").innerHTML = `
-    ${(body.parentes || [])
-      .map(p => `• ${p.nome} (${p.vinculo})`)
-      .join("<br>")}
+  // 👨‍👩‍👧
+  document.getElementById("parentes").innerHTML = `
+    ${(pessoa.parentes || []).map(p => `• ${p.nome} (${p.vinculo})`).join("<br>")}
   `;
+}
+
+// 🔥 SCORE ANIMADO
+function animarScore(valor) {
+  let el = document.getElementById("score");
+  let i = 0;
+
+  let intervalo = setInterval(() => {
+    if (i >= valor) clearInterval(intervalo);
+    el.innerHTML = `Score: ${i}`;
+    i++;
+  }, 10);
+}
+
+// 📊 SCORE SIMPLES
+function calcularScore(p) {
+  let s = 0;
+
+  if (p.name) s += 20;
+  if (p.cpf) s += 10;
+  if (p.birth_date) s += 10;
+  if (p.phones?.length) s += 20;
+  if (p.additional_emails?.length) s += 10;
+  if (p.income) s += 20;
+  if (p.parentes?.length) s += 10;
+
+  return Math.min(s, 100);
 }
