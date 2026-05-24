@@ -1,15 +1,21 @@
 async function buscar() {
   const cpf = document.getElementById("cpfInput").value.replace(/\D/g, '');
-  if (!cpf) return alert("Por favor, digite um CPF válido.");
+
+  if (!cpf) {
+    alert("Por favor, digite um CPF válido.");
+    return;
+  }
 
   try {
     const res = await fetch(`/api/cpf?cpf=${cpf}`);
     const json = await res.json();
 
-    // suporta API com body ou direto
     const p = json.body || json;
 
-    if (!p) return alert("CPF não encontrado.");
+    if (!p) {
+      alert("CPF não encontrado.");
+      return;
+    }
 
     render(p);
 
@@ -25,7 +31,6 @@ async function buscar() {
 function idade(data) {
   if (!data) return null;
 
-  // suporta 24/04/1978 ou 1978-04-24
   let d, m, a;
 
   if (data.includes("/")) {
@@ -40,13 +45,15 @@ function idade(data) {
   let i = hoje.getFullYear() - nasc.getFullYear();
   const diff = hoje.getMonth() - nasc.getMonth();
 
-  if (diff < 0 || (diff === 0 && hoje.getDate() < nasc.getDate())) i--;
+  if (diff < 0 || (diff === 0 && hoje.getDate() < nasc.getDate())) {
+    i--;
+  }
 
   return i;
 }
 
 /* =========================
-   SCORE 0–100
+   SCORE 0-100
 ========================= */
 function score(p) {
   let s = 0;
@@ -67,7 +74,7 @@ function score(p) {
 }
 
 /* =========================
-   PERFIL (CLT / INSS etc)
+   PERFIL
 ========================= */
 function perfil(p, i) {
   const r = Number(p.income || 0);
@@ -81,83 +88,111 @@ function perfil(p, i) {
 }
 
 /* =========================
-   RENDER COMPLETO
+   RENDER (BLINDADO)
 ========================= */
 function render(p) {
   const i = idade(p.birth_date);
   const s = score(p);
   const pf = perfil(p, i);
 
-  // TOP
-  document.getElementById("score").innerText = `${s}`;
-  document.getElementById("fill").style.width = s + "%";
-  document.getElementById("perfil").innerHTML = `<b>${pf}</b>`;
-  document.getElementById("idade").innerHTML = `<b>${i || "N/D"} anos</b>`;
+  // SCORE TOP
+  const scoreEl = document.getElementById("score");
+  if (scoreEl) scoreEl.innerText = `${s}`;
+
+  const fill = document.getElementById("fill");
+  if (fill) fill.style.width = s + "%";
+
+  const perfilEl = document.getElementById("perfil");
+  if (perfilEl) perfilEl.innerHTML = `<b>${pf}</b>`;
+
+  const idadeEl = document.getElementById("idade");
+  if (idadeEl) idadeEl.innerHTML = `<b>${i || "N/D"} anos</b>`;
 
   // DADOS
-  document.getElementById("dados").innerHTML = `
-    <b>👤 Dados</b><br><br>
-    Nome: ${p.name || "-"}<br>
-    CPF: ${p.cpf || "-"}<br>
-    Nascimento: ${p.birth_date || "-"}<br>
-    Sexo: ${p.gender || "-"}<br>
-    Status: ${p.federal_status || "-"}
-  `;
+  const dados = document.getElementById("dados");
+  if (dados) {
+    dados.innerHTML = `
+      <b>👤 Dados</b><br><br>
+      Nome: ${p.name || "-"}<br>
+      CPF: ${p.cpf || "-"}<br>
+      Nascimento: ${p.birth_date || "-"}<br>
+      Sexo: ${p.gender || "-"}<br>
+      Status: ${p.federal_status || "-"}
+    `;
+  }
 
-  // CONTATOS + OPERADORAS + ASSECC
-  document.getElementById("contatos").innerHTML = `
-    <b>📞 Telefones</b><br>
-    ${(p.phones || []).map(t => `• ${t}`).join("<br>")}
+  // CONTATOS
+  const contatos = document.getElementById("contatos");
+  if (contatos) {
+    contatos.innerHTML = `
+      <b>📞 Telefones</b><br>
+      ${(p.phones || []).map(t => `• ${t}`).join("<br>")}
 
-    <br><br><b>📡 Operadoras</b><br>
-    ${(p.telefones_operadoras || []).map(t => `• ${t.telefone} (${t.operadora || "?"})`).join("<br>")}
+      <br><br><b>📡 Operadoras</b><br>
+      ${(p.telefones_operadoras || []).map(t => `• ${t.telefone} (${t.operadora || "?"})`).join("<br>")}
 
-    <br><br><b>📞 Assecc</b><br>
-    ${(p.telefones_assecc || []).map(t => `• ${t.telefone || t}`).join("<br>")}
+      <br><br><b>📞 Assecc</b><br>
+      ${(p.telefones_assecc || []).map(t => `• ${t.telefone || t}`).join("<br>")}
 
-    <br><br><b>📧 Emails</b><br>
-    ${(p.additional_emails || []).map(e => `• ${e}`).join("<br>")}
-  `;
+      <br><br><b>📧 Emails</b><br>
+      ${(p.additional_emails || []).map(e => `• ${e}`).join("<br>")}
+    `;
+  }
 
   // FINANCEIRO
-  document.getElementById("financeiro").innerHTML = `
-    <b>💰 Financeiro</b><br><br>
-    Renda: R$ ${p.income || "0"}<br>
-    PIS: ${p.pis || "-"}<br>
-    Poder: ${p.poder_aquisitivo?.PODER_AQUISITIVO || "-"}<br>
-    Classe Social: ${p.social_class?.social_class || "-"}
-  `;
+  const financeiro = document.getElementById("financeiro");
+  if (financeiro) {
+    financeiro.innerHTML = `
+      <b>💰 Financeiro</b><br><br>
+      Renda: R$ ${p.income || "0"}<br>
+      PIS: ${p.pis || "-"}<br>
+      Poder: ${p.poder_aquisitivo?.PODER_AQUISITIVO || "-"}<br>
+      Classe Social: ${p.social_class?.social_class || "-"}
+    `;
+  }
 
   // ENDEREÇOS
-  document.getElementById("enderecos").innerHTML = `
-    <b>📍 Endereços</b><br><br>
-    ${(p.all_addresses || []).map(a =>
-      `• ${a.street || ""} ${a.number || ""} - ${a.city || ""}/${a.state || ""}`
-    ).join("<br>")}
-  `;
+  const end = document.getElementById("enderecos");
+  if (end) {
+    end.innerHTML = `
+      <b>📍 Endereços</b><br><br>
+      ${(p.all_addresses || []).map(a =>
+        `• ${a.street || ""} ${a.number || ""} - ${a.city || ""}/${a.state || ""}`
+      ).join("<br>")}
+    `;
+  }
 
   // QUALIDADE
-  document.getElementById("qualidade").innerHTML = `
-    <b>📊 Data Quality</b><br><br>
-    Email válido: ${p.data_quality?.has_valid_email ? "Sim" : "Não"}<br>
-    Renda: ${p.data_quality?.has_income_data ? "Sim" : "Não"}<br>
-    PIS: ${p.data_quality?.has_pis ? "Sim" : "Não"}<br>
-    Vizinhos: ${p.data_quality?.has_vizinhos ? "Sim" : "Não"}
-  `;
+  const qual = document.getElementById("qualidade");
+  if (qual) {
+    qual.innerHTML = `
+      <b>📊 Data Quality</b><br><br>
+      Email válido: ${p.data_quality?.has_valid_email ? "Sim" : "Não"}<br>
+      Renda: ${p.data_quality?.has_income_data ? "Sim" : "Não"}<br>
+      PIS: ${p.data_quality?.has_pis ? "Sim" : "Não"}<br>
+      Vizinhos: ${p.data_quality?.has_vizinhos ? "Sim" : "Não"}
+    `;
+  }
 
   // ATIVIDADE
-  document.getElementById("atividade").innerHTML = `
-    <b>🧠 Activity</b><br><br>
-    Primeiro Pedido: ${p.activity_profile?.first_order || "-"}<br>
-    Último Pedido: ${p.activity_profile?.last_order || "-"}<br>
-    Ativo: ${p.activity_profile?.is_active_buyer ? "Sim" : "Não"}
-  `;
+  const atv = document.getElementById("atividade");
+  if (atv) {
+    atv.innerHTML = `
+      <b>🧠 Activity</b><br><br>
+      Primeiro Pedido: ${p.activity_profile?.first_order || "-"}<br>
+      Último Pedido: ${p.activity_profile?.last_order || "-"}<br>
+      Ativo: ${p.activity_profile?.is_active_buyer ? "Sim" : "Não"}
+    `;
+  }
 
-  // REDE / VIZINHOS
-  document.getElementById("rede").innerHTML = `
-    <b>👥 Vizinhos</b><br><br>
-    ${(p.vizinhos || []).slice(0, 8).map(v =>
-      `• ${v.nome} (${v.logradouro || ""})`
-    ).join("<br>")}
-  `;
+  // REDE
+  const rede = document.getElementById("rede");
+  if (rede) {
+    rede.innerHTML = `
+      <b>👥 Vizinhos</b><br><br>
+      ${(p.vizinhos || []).slice(0, 8).map(v =>
+        `• ${v.nome} (${v.logradouro || ""})`
+      ).join("<br>")}
+    `;
+  }
 }
