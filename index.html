@@ -1,158 +1,187 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>INTEL DASH - CPF</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INTEL DASH</title>
 
-    <style>
-        body {
-            font-family: sans-serif;
-            background: #f4f4f9;
-            padding: 20px;
-        }
+<style>
+/* ===== RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Courier New", monospace;
+}
 
-        .container {
-            max-width: 1000px;
-            margin: auto;
-        }
+/* ===== FUNDO HACKER ANIMADO ===== */
+body {
+    background: black;
+    color: #00ff88;
+    overflow-x: hidden;
+}
 
-        h2 {
-            margin-bottom: 20px;
-        }
+/* efeito matrix leve */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0,255,100,0.05),
+        rgba(0,255,100,0.05) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    pointer-events: none;
+    animation: scan 6s linear infinite;
+}
 
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+@keyframes scan {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(20px); }
+}
 
-        input {
-            padding: 10px;
-            flex: 1;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
+/* ===== CONTAINER ===== */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
 
-        button {
-            padding: 10px 20px;
-            cursor: pointer;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 6px;
-        }
+/* ===== HEADER ===== */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #00ff88;
+}
 
-        button:hover {
-            background: #0056b3;
-        }
+/* ===== SEARCH ===== */
+.search-box {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
 
-        .card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
+input {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px;
+    background: #000;
+    border: 1px solid #00ff88;
+    color: #00ff88;
+    outline: none;
+}
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-        }
+button {
+    padding: 12px 20px;
+    background: #00ff88;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
 
-        .top-card {
-            margin-bottom: 20px;
-        }
+button:hover {
+    background: #00cc66;
+}
 
-        .bar {
-            background: #ddd;
-            height: 12px;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
+/* ===== SCORE ===== */
+.card {
+    background: rgba(0,0,0,0.7);
+    border: 1px solid #00ff88;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,255,100,0.2);
+}
 
-        .bar-fill {
-            background: linear-gradient(90deg, #28a745, #00c853);
-            height: 100%;
-            width: 0%;
-            transition: width 0.6s ease;
-        }
+/* barra score */
+.bar {
+    background: #111;
+    height: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    overflow: hidden;
+}
 
-        #score {
-            font-size: 18px;
-            font-weight: bold;
-        }
+.bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00ff88, #00ffaa);
+    transition: 0.6s;
+    box-shadow: 0 0 10px #00ff88;
+}
 
-        #perfil {
-            margin-top: 5px;
-            font-weight: bold;
-        }
+/* ===== GRID RESPONSIVO ===== */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
 
-        #idade {
-            margin-top: 5px;
-            color: #555;
-        }
-    </style>
+/* ===== TEXTO ANIMADO ===== */
+.glow {
+    text-shadow: 0 0 10px #00ff88;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 600px) {
+    h2 {
+        font-size: 18px;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .search-box {
+        flex-direction: column;
+    }
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-    <h2>🔎 INTEL DASH - Consulta CPF</h2>
+    <h2 class="glow">🔎 INTEL DASH</h2>
 
-    <!-- SEARCH -->
     <div class="search-box">
         <input type="text" id="cpfInput" placeholder="Digite o CPF...">
-        <button onclick="buscar()">Buscar</button>
+        <button onclick="buscar()">BUSCAR</button>
     </div>
 
-    <!-- TOP SCORE -->
-    <div class="card top-card">
+    <!-- SCORE -->
+    <div class="card">
         <div id="score">Score: 0</div>
         <div class="bar">
             <div class="bar-fill" id="fill"></div>
         </div>
-
-        <div id="perfil"><b>Perfil:</b> -</div>
-        <div id="idade"><b>Idade:</b> -</div>
+        <div id="perfil">Perfil: -</div>
+        <div id="idade">Idade: -</div>
     </div>
 
     <!-- GRID -->
     <div class="grid">
 
-        <div class="card" id="dados">
-            <b>👤 Dados</b>
-        </div>
-
-        <div class="card" id="contatos">
-            <b>📞 Contatos</b>
-        </div>
-
-        <div class="card" id="financeiro">
-            <b>💰 Financeiro</b>
-        </div>
-
-        <div class="card" id="enderecos">
-            <b>📍 Endereços</b>
-        </div>
-
-        <div class="card" id="qualidade">
-            <b>📊 Data Quality</b>
-        </div>
-
-        <div class="card" id="atividade">
-            <b>🧠 Activity</b>
-        </div>
-
-        <div class="card" id="rede">
-            <b>👥 Vizinhos</b>
-        </div>
+        <div class="card" id="dados">👤 Dados</div>
+        <div class="card" id="contatos">📞 Contatos</div>
+        <div class="card" id="financeiro">💰 Financeiro</div>
+        <div class="card" id="enderecos">📍 Endereços</div>
+        <div class="card" id="qualidade">📊 Data Quality</div>
+        <div class="card" id="atividade">🧠 Activity</div>
+        <div class="card" id="rede">👥 Vizinhos</div>
 
     </div>
+
 </div>
 
-<!-- IMPORTANTE: DEFER evita bug de DOM -->
 <script src="app.js" defer></script>
 
 </body>
